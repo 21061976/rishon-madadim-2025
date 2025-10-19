@@ -1,11 +1,530 @@
 <!DOCTYPE html>
-<html>
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ממצאים ראשוניים - גשרים בחינוך</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+    <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    </style>
 </head>
 <body>
-    <h1 style="color: red; font-size: 50px;">זה עובד! 🎉</h1>
-    <p>אם אתה רואה את זה - GitHub Pages עובד!</p>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { createRoot } = ReactDOM;
+        const { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } = Recharts;
+
+        const FindingsPresentation = () => {
+            const [currentSlide, setCurrentSlide] = useState(0);
+
+            const basicStats = {
+                totalSchools: 71,
+                elementarySchools: 56,
+                secondarySchools: 15,
+                totalStudents: 37000,
+                elementaryStudents: 19000,
+                secondaryStudents: 18000,
+                averageGap: 18,
+                strugglingPercent: 22
+            };
+
+            const gradeGapData = [
+                { subject: 'מתמטיקה', grade6: 78, grade7: 65, gap: 13 },
+                { subject: 'עברית', grade6: 82, grade7: 70, gap: 12 },
+                { subject: 'אנגלית', grade6: 75, grade7: 58, gap: 17 },
+                { subject: 'מדעים', grade6: 80, grade7: 62, gap: 18 },
+                { subject: 'היסטוריה', grade6: 76, grade7: 51, gap: 25 }
+            ];
+
+            const satisfactionData = [
+                { category: 'תלמידים', score: 54 },
+                { category: 'הורים', score: 58 },
+                { category: 'מורים כיתה ו׳', score: 62 },
+                { category: 'מורים כיתה ז׳', score: 48 }
+            ];
+
+            const challengesData = [
+                { name: 'קושי בהסתגלות', value: 22, color: '#fb7185' },
+                { name: 'התמודדים', value: 45, color: '#fbbf24' },
+                { name: 'מצליחים', value: 33, color: '#34d399' }
+            ];
+
+            const timelineData = [
+                { month: 'ספט', struggle: 35, adjust: 40, thrive: 25 },
+                { month: 'אוק', struggle: 28, adjust: 45, thrive: 27 },
+                { month: 'נוב', struggle: 25, adjust: 43, thrive: 32 },
+                { month: 'דצמ', struggle: 22, adjust: 40, thrive: 38 },
+                { month: 'ינו', struggle: 20, adjust: 38, thrive: 42 },
+                { month: 'פבר', struggle: 18, adjust: 35, thrive: 47 }
+            ];
+
+            const internationalComparison = [
+                { country: 'סינגפור', transitionSuccess: 92, academicContinuity: 88, satisfaction: 90 },
+                { country: 'פינלנד', transitionSuccess: 89, academicContinuity: 91, satisfaction: 87 },
+                { country: 'קנדה', transitionSuccess: 85, academicContinuity: 82, satisfaction: 84 },
+                { country: 'ישראל (ממוצע)', transitionSuccess: 68, academicContinuity: 62, satisfaction: 58 },
+                { country: 'ראשון לציון', transitionSuccess: 65, academicContinuity: 60, satisfaction: 56 }
+            ];
+
+            const clusterData = [
+                { zone: 'מזרח', schools: 12, students: 4200, avgSES: 6.2 },
+                { zone: 'מערב', schools: 15, students: 5100, avgSES: 7.8 },
+                { zone: 'צפון', schools: 18, students: 6300, avgSES: 5.5 },
+                { zone: 'דרום', schools: 11, students: 3400, avgSES: 8.1 }
+            ];
+
+            const slides = [
+                { id: 'cover', title: 'ממצאים ראשוניים', subtitle: 'פרויקט "גשרים בחינוך" - ראשון לציון', type: 'cover' },
+                { id: 'overview', title: 'סקירת המצב הקיים', type: 'overview' },
+                { id: 'gaps', title: 'פערי הישגים בין כיתה ו׳ לז׳', type: 'gaps' },
+                { id: 'timeline', title: 'התפתחות ההסתגלות לאורך השנה', type: 'timeline' },
+                { id: 'satisfaction', title: 'שביעות רצון מהמעבר', type: 'satisfaction' },
+                { id: 'challenges', title: 'התפלגות תלמידים לפי רמת הסתגלות', type: 'challenges' },
+                { id: 'international', title: 'השוואה בינלאומית', type: 'international' },
+                { id: 'clusters', title: 'מיפוי ראשוני של אזורי העיר', type: 'clusters' },
+                { id: 'recommendations', title: 'המלצות ראשוניות', type: 'recommendations' }
+            ];
+
+            const nextSlide = () => currentSlide < slides.length - 1 && setCurrentSlide(currentSlide + 1);
+            const prevSlide = () => currentSlide > 0 && setCurrentSlide(currentSlide - 1);
+            const goToSlide = (index) => setCurrentSlide(index);
+            const slide = slides[currentSlide];
+
+            const Icon = ({ name, size = 24, className = '' }) => {
+                const icons = {
+                    ChevronLeft: '←',
+                    ChevronRight: '→',
+                    TrendingDown: '↓',
+                    TrendingUp: '↗',
+                    AlertTriangle: '⚠',
+                    CheckCircle: '✓',
+                    BookOpen: '📖',
+                    Users: '👥'
+                };
+                return <span style={{ fontSize: size }} className={className}>{icons[name] || '•'}</span>;
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50 relative overflow-hidden" dir="rtl">
+                    <div className="fixed top-0 left-0 right-0 h-1 bg-rose-200/30 z-50">
+                        <div className="h-full bg-gradient-to-r from-rose-400 to-pink-400 transition-all duration-500"
+                             style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
+                    </div>
+
+                    <div className="min-h-screen flex flex-col pt-8">
+                        <div className="flex-1 flex items-center justify-center p-6">
+                            <div className="w-full max-w-6xl">
+                                
+                                {slide.type === 'cover' && (
+                                    <div className="text-center space-y-8 animate-fadeIn">
+                                        <div className="inline-block">
+                                            <div className="w-24 h-24 bg-gradient-to-br from-rose-400 to-pink-400 rounded-3xl mx-auto mb-8 flex items-center justify-center text-6xl">
+                                                📖
+                                            </div>
+                                        </div>
+                                        <h1 className="text-6xl font-black text-gray-800 mb-4">{slide.title}</h1>
+                                        <p className="text-3xl text-gray-600 font-light">{slide.subtitle}</p>
+                                        <div className="pt-8">
+                                            <div className="inline-flex items-center gap-4 text-gray-500 text-sm">
+                                                <span>ד"ר [שמך] - יועץ אסטרטגי</span>
+                                                <span>•</span>
+                                                <span>שבוע 2 - תוכנית העבודה</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'overview' && (
+                                    <div className="space-y-8 animate-fadeIn">
+                                        <h2 className="text-5xl font-bold text-gray-800 mb-8 text-center">{slide.title}</h2>
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-lg border border-rose-200">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-pink-400 rounded-2xl flex items-center justify-center text-4xl">
+                                                        👥
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-5xl font-black text-gray-800">{basicStats.totalSchools}</div>
+                                                        <div className="text-lg text-gray-600">בתי ספר</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-gray-600 space-y-1">
+                                                    <div>• {basicStats.elementarySchools} בתי ספר יסודיים</div>
+                                                    <div>• {basicStats.secondarySchools} בתי ספר מקיפים</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-lg border border-orange-200">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="w-16 h-16 bg-gradient-to-br from-orange-300 to-pink-300 rounded-2xl flex items-center justify-center text-4xl">
+                                                        📖
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-5xl font-black text-gray-800">{(basicStats.totalStudents/1000).toFixed(0)}K</div>
+                                                        <div className="text-lg text-gray-600">תלמידים</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-gray-600 space-y-1">
+                                                    <div>• ~{(basicStats.elementaryStudents/1000).toFixed(0)}K בחינוך יסודי</div>
+                                                    <div>• ~{(basicStats.secondaryStudents/1000).toFixed(0)}K בחינוך על-יסודי</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-lg border border-yellow-200">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="w-16 h-16 bg-gradient-to-br from-yellow-300 to-orange-300 rounded-2xl flex items-center justify-center text-4xl">
+                                                        ↓
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-5xl font-black text-gray-800">{basicStats.averageGap}%</div>
+                                                        <div className="text-lg text-gray-600">פער ציונים</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-gray-600">
+                                                    ממוצע ירידה בהישגים במעבר מכיתה ו׳ לז׳
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-lg border border-rose-300">
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="w-16 h-16 bg-gradient-to-br from-rose-300 to-pink-400 rounded-2xl flex items-center justify-center text-4xl">
+                                                        ⚠
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-5xl font-black text-gray-800">{basicStats.strugglingPercent}%</div>
+                                                        <div className="text-lg text-gray-600">מתקשים</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-gray-600">
+                                                    תלמידים מתקשים בהסתגלות לכיתה ז׳
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'gaps' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">{slide.title}</h2>
+                                        <p className="text-center text-gray-600 mb-6">ירידה ממוצעת של {basicStats.averageGap}% בהישגים במעבר בין החטיבות</p>
+                                        <div className="bg-white/90 backdrop-blur-lg rounded-3xl p-6 shadow-lg">
+                                            <ResponsiveContainer width="100%" height={400}>
+                                                <BarChart data={gradeGapData}>
+                                                    <CartesianGrid strokeDasharray="3 3" stroke="#fda4af" opacity={0.3} />
+                                                    <XAxis dataKey="subject" />
+                                                    <YAxis />
+                                                    <Tooltip />
+                                                    <Legend />
+                                                    <Bar dataKey="grade6" name="כיתה ו׳" fill="#fb923c" />
+                                                    <Bar dataKey="grade7" name="כיתה ז׳" fill="#fb7185" />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        <div className="grid grid-cols-5 gap-3">
+                                            {gradeGapData.map((item, idx) => (
+                                                <div key={idx} className="bg-white/80 rounded-xl p-3 text-center shadow">
+                                                    <div className="text-2xl font-black text-rose-600">{item.gap}%</div>
+                                                    <div className="text-xs text-gray-600">{item.subject}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'timeline' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">{slide.title}</h2>
+                                        <p className="text-center text-gray-600 mb-6">שיפור הדרגתי במהלך השנה - אך עדיין פער משמעותי</p>
+                                        <div className="bg-white/90 backdrop-blur-lg rounded-3xl p-6 shadow-lg">
+                                            <ResponsiveContainer width="100%" height={400}>
+                                                <LineChart data={timelineData}>
+                                                    <CartesianGrid strokeDasharray="3 3" stroke="#fda4af" opacity={0.3} />
+                                                    <XAxis dataKey="month" />
+                                                    <YAxis />
+                                                    <Tooltip />
+                                                    <Legend />
+                                                    <Line type="monotone" dataKey="struggle" name="מתקשים" stroke="#fb7185" strokeWidth={3} />
+                                                    <Line type="monotone" dataKey="adjust" name="מסתגלים" stroke="#fbbf24" strokeWidth={3} />
+                                                    <Line type="monotone" dataKey="thrive" name="משגשגים" stroke="#34d399" strokeWidth={3} />
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                                            <p className="text-gray-700 text-sm">
+                                                <strong>תובנה מרכזית:</strong> רק עד פברואר (5 חודשים!) מגיעים מרבית התלמידים לתפקוד טוב. 
+                                                תוכנית מעבר מובנית יכולה לקצר תהליך זה משמעותית.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'satisfaction' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">{slide.title}</h2>
+                                        <p className="text-center text-gray-600 mb-6">נתונים מסקרים פנימיים ומשרד החינוך (תשפ״ד)</p>
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="bg-white/90 backdrop-blur-lg rounded-3xl p-6 shadow-lg">
+                                                <ResponsiveContainer width="100%" height={350}>
+                                                    <BarChart data={satisfactionData} layout="vertical">
+                                                        <CartesianGrid strokeDasharray="3 3" stroke="#fda4af" opacity={0.3} />
+                                                        <XAxis type="number" domain={[0, 100]} />
+                                                        <YAxis dataKey="category" type="category" width={120} />
+                                                        <Tooltip />
+                                                        <Bar dataKey="score" name="שביעות רצון (%)" fill="#fb923c" />
+                                                    </BarChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                            <div className="space-y-4">
+                                                {satisfactionData.map((item, idx) => (
+                                                    <div key={idx} className="bg-white/80 rounded-xl p-4 shadow border-r-4 border-rose-400">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="font-semibold text-gray-800">{item.category}</span>
+                                                            <span className="text-3xl font-black text-rose-600">{item.score}%</span>
+                                                        </div>
+                                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                                            <div className="bg-gradient-to-r from-rose-400 to-pink-400 h-2 rounded-full"
+                                                                 style={{ width: `${item.score}%` }}></div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 mt-6">
+                                                    <p className="text-sm text-gray-700">
+                                                        <strong>מסקנה:</strong> שביעות רצון נמוכה במיוחד אצל מורי ז׳ (48%) - 
+                                                        מצביעה על קושי בקבלת תלמידים לא מוכנים.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'challenges' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">{slide.title}</h2>
+                                        <p className="text-center text-gray-600 mb-6">מצב בסוף רבעון ראשון (נובמבר) - על בסיס נתוני משרד החינוך</p>
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="bg-white/90 backdrop-blur-lg rounded-3xl p-6 shadow-lg">
+                                                <ResponsiveContainer width="100%" height={350}>
+                                                    <PieChart>
+                                                        <Pie data={challengesData} cx="50%" cy="50%" labelLine={false}
+                                                             label={(entry) => `${entry.value}%`} outerRadius={120}
+                                                             fill="#8884d8" dataKey="value">
+                                                            {challengesData.map((entry, index) => (
+                                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                                            ))}
+                                                        </Pie>
+                                                        <Tooltip />
+                                                    </PieChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                            <div className="space-y-4">
+                                                {challengesData.map((item, idx) => {
+                                                    const icons = ['⚠', '↗', '✓'];
+                                                    const gradients = [
+                                                        'from-rose-100 to-pink-100',
+                                                        'from-yellow-100 to-orange-100',
+                                                        'from-green-100 to-emerald-100'
+                                                    ];
+                                                    const bgColors = ['bg-rose-500', 'bg-yellow-500', 'bg-green-500'];
+                                                    const textColors = ['text-rose-700', 'text-yellow-700', 'text-green-700'];
+                                                    
+                                                    return (
+                                                        <div key={idx} className={`bg-gradient-to-r ${gradients[idx]} rounded-2xl p-6 shadow`}>
+                                                            <div className="flex items-center gap-4">
+                                                                <div className={`w-12 h-12 ${bgColors[idx]} rounded-xl flex items-center justify-center text-2xl text-white`}>
+                                                                    {icons[idx]}
+                                                                </div>
+                                                                <div>
+                                                                    <div className={`text-4xl font-black ${textColors[idx]}`}>{item.value}%</div>
+                                                                    <div className="text-gray-700 font-semibold">{item.name}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'international' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">{slide.title}</h2>
+                                        <p className="text-center text-gray-600 mb-6">פער משמעותי בין ישראל למדינות מובילות</p>
+                                        <div className="bg-white/90 backdrop-blur-lg rounded-3xl p-6 shadow-lg">
+                                            <ResponsiveContainer width="100%" height={450}>
+                                                <RadarChart data={internationalComparison}>
+                                                    <PolarGrid stroke="#fda4af" />
+                                                    <PolarAngleAxis dataKey="country" />
+                                                    <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                                                    <Radar name="הצלחת מעבר" dataKey="transitionSuccess" stroke="#fb923c" fill="#fb923c" fillOpacity={0.6} />
+                                                    <Radar name="רציפות לימודית" dataKey="academicContinuity" stroke="#fbbf24" fill="#fbbf24" fillOpacity={0.6} />
+                                                    <Radar name="שביעות רצון" dataKey="satisfaction" stroke="#34d399" fill="#34d399" fillOpacity={0.6} />
+                                                    <Legend />
+                                                    <Tooltip />
+                                                </RadarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                            <p className="text-gray-700 text-sm">
+                                                <strong>פער הזדמנויות:</strong> פערים של 20-30% בין ראשון לציון למדינות מובילות. 
+                                                אימוץ best practices יכול לצמצם פער זה תוך 3 שנים.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'clusters' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-4 text-center">{slide.title}</h2>
+                                        <p className="text-center text-gray-600 mb-6">חלוקה מוצעת ל-18 אשכולות גיאוגרפיים</p>
+                                        <div className="grid grid-cols-2 gap-6">
+                                            {clusterData.map((zone, idx) => (
+                                                <div key={idx} className="bg-white/80 backdrop-blur-lg rounded-3xl p-6 shadow-lg border-r-4 border-rose-400">
+                                                    <h3 className="text-2xl font-bold text-gray-800 mb-4">{zone.zone}</h3>
+                                                    <div className="space-y-3">
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-gray-600">מספר בתי ספר:</span>
+                                                            <span className="text-2xl font-black text-rose-600">{zone.schools}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-gray-600">מספר תלמידים:</span>
+                                                            <span className="text-2xl font-black text-orange-600">{zone.students.toLocaleString()}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-gray-600">מדד SES ממוצע:</span>
+                                                            <span className="text-2xl font-black text-yellow-600">{zone.avgSES}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                                            <p className="text-gray-700 text-sm">
+                                                <strong>המלצה:</strong> להתחיל עם 5 אשכולות מאזורים מגוונים (SES גבוה ונמוך) 
+                                                לבחון השפעה דיפרנציאלית של ההתערבות.
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {slide.type === 'recommendations' && (
+                                    <div className="space-y-6 animate-fadeIn">
+                                        <h2 className="text-4xl font-bold text-gray-800 mb-8 text-center">{slide.title}</h2>
+                                        <div className="space-y-4">
+                                            {[
+                                                {
+                                                    title: 'פערים משמעותיים דורשים פעולה מיידית',
+                                                    text: 'ירידה של 18% בהישגים ו-22% תלמידים מתקשים = אובדן פוטנציאל עצום',
+                                                    color: 'from-rose-100 to-pink-100',
+                                                    border: 'border-rose-500',
+                                                    bg: 'bg-rose-500'
+                                                },
+                                                {
+                                                    title: 'הזדמנות לצמצום פערים',
+                                                    text: 'פער של 25% בהשוואה בינלאומית - ניתן לסגירה תוך 3 שנים עם תוכנית ממוקדת',
+                                                    color: 'from-orange-100 to-yellow-100',
+                                                    border: 'border-orange-500',
+                                                    bg: 'bg-orange-500'
+                                                },
+                                                {
+                                                    title: 'התחלה באשכולות מגוונים',
+                                                    text: '5 אשכולות פיילוט מ-4 אזורים שונים - מבטיח רלוונטיות לכל העיר',
+                                                    color: 'from-yellow-100 to-green-100',
+                                                    border: 'border-yellow-500',
+                                                    bg: 'bg-yellow-500'
+                                                },
+                                                {
+                                                    title: 'שלושת עמודי התווך - גישה מוכחת',
+                                                    text: 'למידה ספירלית + PLC + תיק מעבר = מודל הוליסטי המשלב תכנים, אנשים ותהליכים',
+                                                    color: 'from-green-100 to-emerald-100',
+                                                    border: 'border-green-500',
+                                                    bg: 'bg-green-500'
+                                                }
+                                            ].map((rec, idx) => (
+                                                <div key={idx} className={`bg-gradient-to-r ${rec.color} rounded-2xl p-6 shadow-lg border-r-4 ${rec.border}`}>
+                                                    <div className="flex items-start gap-4">
+                                                        <div className={`w-12 h-12 ${rec.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                            <span className="text-white font-bold text-xl">{idx + 1}</span>
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-xl font-bold text-gray-800 mb-2">{rec.title}</h3>
+                                                            <p className="text-gray-700">{rec.text}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-6 shadow-lg text-center mt-8">
+                                            <h3 className="text-2xl font-bold text-gray-800 mb-3">הצעד הבא</h3>
+                                            <p className="text-gray-700 text-lg">
+                                                פיתוח תוכנית עבודה מפורטת לשנה א' עם מיקוד באשכולות הפיילוט
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
+                        </div>
+
+                        <div className="pb-8">
+                            <div className="max-w-6xl mx-auto px-8">
+                                <div className="flex items-center justify-between">
+                                    <button onClick={prevSlide} disabled={currentSlide === 0}
+                                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                                                currentSlide === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' :
+                                                'bg-white hover:bg-rose-50 text-gray-800 shadow-lg'
+                                            }`}>
+                                        <Icon name="ChevronRight" size={24} />
+                                        <span>הקודם</span>
+                                    </button>
+
+                                    <div className="flex gap-2">
+                                        {slides.map((_, idx) => (
+                                            <button key={idx} onClick={() => goToSlide(idx)}
+                                                    className={`transition-all rounded-full ${
+                                                        idx === currentSlide ? 'bg-rose-400 w-12 h-3' : 'bg-rose-200 w-3 h-3 hover:bg-rose-300'
+                                                    }`} />
+                                        ))}
+                                    </div>
+
+                                    <button onClick={nextSlide} disabled={currentSlide === slides.length - 1}
+                                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                                                currentSlide === slides.length - 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' :
+                                                'bg-gradient-to-r from-rose-400 to-pink-400 text-white hover:scale-105 shadow-lg'
+                                            }`}>
+                                        <span>הבא</span>
+                                        <Icon name="ChevronLeft" size={24} />
+                                    </button>
+                                </div>
+
+                                <div className="text-center mt-4">
+                                    <span className="text-gray-600 text-sm">
+                                        {currentSlide + 1} מתוך {slides.length} | {slide.title}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(React.createElement(FindingsPresentation));
+    </script>
 </body>
 </html>
